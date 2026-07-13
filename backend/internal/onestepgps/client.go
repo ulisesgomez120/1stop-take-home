@@ -5,7 +5,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"time"
 )
+
+const requestTimeout = 10 * time.Second
 
 // Client fetches device data from the OneStepGPS API.
 type Client struct {
@@ -18,7 +21,7 @@ func NewClient(apiKey, baseURL string) *Client {
 	return &Client{
 		apiKey:     apiKey,
 		baseURL:    baseURL,
-		httpClient: &http.Client{},
+		httpClient: &http.Client{Timeout: requestTimeout},
 	}
 }
 

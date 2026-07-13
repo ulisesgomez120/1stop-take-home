@@ -2,14 +2,23 @@
 package config
 
 import (
+	"errors"
 	"os"
-	"strconv"
 	"time"
 
 	"github.com/joho/godotenv"
 )
 
-const defaultOneStepGPSBaseURL = "https://track.onestepgps.com/v3/api/public/device"
+// Non-secret settings with safe defaults. These are plain constants rather
+// than env vars: .env is reserved for secrets and values that genuinely
+// differ per environment.
+const (
+	oneStepGPSBaseURL = "https://track.onestepgps.com/v3/api/public/device"
+	port              = "8080"
+	dbPath            = "data.db"
+	pollInterval      = 10 * time.Second
+	allowedOrigin     = "http://localhost:5173"
+)
 
 type Config struct {
 	OneStepGPSAPIKey  string
@@ -17,33 +26,26 @@ type Config struct {
 	Port              string
 	DBPath            string
 	PollInterval      time.Duration
+	AllowedOrigin     string
 }
 
 // Load reads a .env file if present (ignored if missing) and returns the
-// resolved Config from environment variables, applying defaults where
-// appropriate.
+// resolved Config. ONESTEPGPS_API_KEY is the only value sourced from the
+// environment; everything else is a fixed default.
 func Load() (*Config, error) {
 	_ = godotenv.Load()
 
-	pollSecs, err := strconv.Atoi(getEnvOrDefault("POLL_INTERVAL_SECONDS", "10"))
-	if err != nil {
-		return nil, err
+	apiKey := os.Getenv("ONESTEPGPS_API_KEY")
+	if apiKey == "" {
+		return nil, errors.New("ONESTEPGPS_API_KEY is required")
 	}
 
-	cfg := &Config{
-		OneStepGPSAPIKey:  os.Getenv("ONESTEPGPS_API_KEY"),
-		OneStepGPSBaseURL: getEnvOrDefault("ONESTEPGPS_BASE_URL", defaultOneStepGPSBaseURL),
-		Port:              getEnvOrDefault("PORT", "8080"),
-		DBPath:            getEnvOrDefault("DB_PATH", "data.db"),
-		PollInterval:      time.Duration(pollSecs) * time.Second,
-	}
-
-	return cfg, nil
-}
-
-func getEnvOrDefault(key, def string) string {
-	if v := os.Getenv(key); v != "" {
-		return v
-	}
-	return def
+	return &Config{
+		OneStepGPSAPIKey:  apiKey,
+		OneStepGPSBaseURL: oneStepGPSBaseURL,
+		Port:              port,
+		DBPath:            dbPath,
+		PollInterval:      pollInterval,
+		AllowedOrigin:     allowedOrigin,
+	}, nil
 }
