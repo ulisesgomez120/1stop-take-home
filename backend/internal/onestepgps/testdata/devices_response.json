@@ -1,0 +1,109 @@
+{
+  "result_list": [
+    {
+      "device_id": "6kNRGedyQUuiPk81f07-1V",
+      "display_name": "#5",
+      "active_state": "active",
+      "online": true,
+      "latest_device_point": {
+        "lat": 37.376804299999996,
+        "lng": -121.8262862,
+        "speed": 0,
+        "dt_tracker": "2026-07-12T03:20:29Z",
+        "device_state": {
+          "drive_status": "off"
+        }
+      }
+    },
+    {
+      "device_id": "6j9dYnx1Q4eoPF81f07-0k",
+      "display_name": "Alejandro",
+      "active_state": "active",
+      "online": true,
+      "latest_device_point": {
+        "lat": 34.672111,
+        "lng": -118.073318,
+        "speed": 0,
+        "dt_tracker": "2026-07-12T03:29:18Z",
+        "device_state": {
+          "drive_status": "off"
+        }
+      }
+    },
+    {
+      "device_id": "6iNWmPw2QPymV-81f07-1F",
+      "display_name": "Ford  Lightning",
+      "active_state": "active",
+      "online": false,
+      "latest_device_point": {
+        "lat": 34.389095306396484,
+        "lng": -118.45784759521484,
+        "speed": 0,
+        "dt_tracker": "2026-07-11T03:30:25Z",
+        "device_state": {
+          "drive_status": "off"
+        }
+      }
+    },
+    {
+      "device_id": "6eOXosw8Qrqem-81f07--V",
+      "display_name": "Francis",
+      "active_state": "active",
+      "online": false,
+      "latest_device_point": {
+        "lat": 34.1094556,
+        "lng": -117.79730889999999,
+        "speed": 0,
+        "dt_tracker": "2026-07-11T20:41:55Z",
+        "device_state": {
+          "drive_status": "off"
+        }
+      }
+    },
+    {
+      "device_id": "6g-SS2xWNvHfh-81f07-0-",
+      "display_name": "Spare Red Camry",
+      "active_state": "active",
+      "online": false,
+      "latest_device_point": {
+        "lat": 34.2886796,
+        "lng": -118.4267419,
+        "speed": 0,
+        "dt_tracker": "2025-10-24T06:16:26Z",
+        "device_state": {
+          "drive_status": "off"
+        }
+      }
+    },
+    {
+      "device_id": "6fmwK6CTQ91Hf-81f07-0V",
+      "display_name": "TRUCK 2",
+      "active_state": "active",
+      "online": true,
+      "latest_device_point": {
+        "lat": 34.7058951,
+        "lng": -118.09832569999999,
+        "speed": 0,
+        "dt_tracker": "2026-07-12T03:08:10Z",
+        "device_state": {
+          "drive_status": "off"
+        }
+      }
+    },
+    {
+      "device_id": "6dQe8i0fNrLXp-81f07-0-",
+      "display_name": "Ubaldo",
+      "active_state": "active",
+      "online": true,
+      "latest_device_point": {
+        "lat": 38.6597891,
+        "lng": -121.7775147,
+        "speed": 0,
+        "dt_tracker": "2026-07-12T03:11:27Z",
+        "device_state": {
+          "drive_status": "off"
+        }
+      }
+    }
+  ]
+}

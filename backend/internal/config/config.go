@@ -7,10 +7,13 @@ import (
 	"github.com/joho/godotenv"
 )
 
+const defaultOneStepGPSBaseURL = "https://track.onestepgps.com/v3/api/public/device"
+
 type Config struct {
-	OneStepGPSAPIKey string
-	Port             string
-	DBPath           string
+	OneStepGPSAPIKey  string
+	OneStepGPSBaseURL string
+	Port              string
+	DBPath            string
 }
 
 // Load reads a .env file if present (ignored if missing) and returns the
@@ -20,9 +23,10 @@ func Load() (*Config, error) {
 	_ = godotenv.Load()
 
 	cfg := &Config{
-		OneStepGPSAPIKey: os.Getenv("ONESTEPGPS_API_KEY"),
-		Port:             getEnvOrDefault("PORT", "8080"),
-		DBPath:           getEnvOrDefault("DB_PATH", "data.db"),
+		OneStepGPSAPIKey:  os.Getenv("ONESTEPGPS_API_KEY"),
+		OneStepGPSBaseURL: getEnvOrDefault("ONESTEPGPS_BASE_URL", defaultOneStepGPSBaseURL),
+		Port:              getEnvOrDefault("PORT", "8080"),
+		DBPath:            getEnvOrDefault("DB_PATH", "data.db"),
 	}
 
 	return cfg, nil
