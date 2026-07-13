@@ -3,6 +3,8 @@ package config
 
 import (
 	"os"
+	"strconv"
+	"time"
 
 	"github.com/joho/godotenv"
 )
@@ -14,6 +16,7 @@ type Config struct {
 	OneStepGPSBaseURL string
 	Port              string
 	DBPath            string
+	PollInterval      time.Duration
 }
 
 // Load reads a .env file if present (ignored if missing) and returns the
@@ -22,11 +25,17 @@ type Config struct {
 func Load() (*Config, error) {
 	_ = godotenv.Load()
 
+	pollSecs, err := strconv.Atoi(getEnvOrDefault("POLL_INTERVAL_SECONDS", "10"))
+	if err != nil {
+		return nil, err
+	}
+
 	cfg := &Config{
 		OneStepGPSAPIKey:  os.Getenv("ONESTEPGPS_API_KEY"),
 		OneStepGPSBaseURL: getEnvOrDefault("ONESTEPGPS_BASE_URL", defaultOneStepGPSBaseURL),
 		Port:              getEnvOrDefault("PORT", "8080"),
 		DBPath:            getEnvOrDefault("DB_PATH", "data.db"),
+		PollInterval:      time.Duration(pollSecs) * time.Second,
 	}
 
 	return cfg, nil
