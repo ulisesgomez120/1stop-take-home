@@ -1,12 +1,16 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
 import { useDevicesStore } from './stores/devices'
+import { usePreferencesStore } from './stores/preferences'
 
 const devicesStore = useDevicesStore()
+const preferencesStore = usePreferencesStore()
 
 onMounted(async () => {
   await devicesStore.fetchDevices()
   console.log('devices', devicesStore.devices)
+  await preferencesStore.fetchPreferences()
+  console.log('preferences', preferencesStore.preferences)
 })
 </script>
 
