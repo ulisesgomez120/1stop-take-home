@@ -1,23 +1,37 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import { getDevices, type Device } from '../api/devices'
+import { apiURL } from '../api/client'
+import type { Device } from '../api/devices'
+
+export type ConnectionState = 'connecting' | 'live' | 'error'
 
 export const useDevicesStore = defineStore('devices', () => {
   const devices = ref<Device[]>([])
-  const loading = ref(false)
-  const error = ref<string | null>(null)
+  const connectionState = ref<ConnectionState>('connecting')
+  let source: EventSource | null = null
 
-  async function fetchDevices() {
-    loading.value = true
-    error.value = null
-    try {
-      devices.value = await getDevices()
-    } catch (err) {
-      error.value = err instanceof Error ? err.message : String(err)
-    } finally {
-      loading.value = false
+  function connect() {
+    if (source) return
+    connectionState.value = 'connecting'
+    source = new EventSource(apiURL('/api/devices/stream'))
+
+    source.onopen = () => {
+      connectionState.value = 'live'
+    }
+
+    source.onmessage = (event) => {
+      devices.value = JSON.parse(event.data) as Device[]
+    }
+
+    source.onerror = () => {
+      connectionState.value = 'error'
     }
   }
 
-  return { devices, loading, error, fetchDevices }
+  function disconnect() {
+    source?.close()
+    source = null
+  }
+
+  return { devices, connectionState, connect, disconnect }
 })

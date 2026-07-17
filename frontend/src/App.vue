@@ -7,8 +7,7 @@ const devicesStore = useDevicesStore()
 const preferencesStore = usePreferencesStore()
 
 onMounted(async () => {
-  await devicesStore.fetchDevices()
-  console.log('devices', devicesStore.devices)
+  devicesStore.connect()
   await preferencesStore.fetchPreferences()
   console.log('preferences', preferencesStore.preferences)
 })
@@ -17,8 +16,7 @@ onMounted(async () => {
 <template>
   <div>
     <h1>OneStepGPS Scaffold</h1>
-    <p v-if="devicesStore.loading">Loading devices...</p>
-    <p v-else-if="devicesStore.error">Error: {{ devicesStore.error }}</p>
-    <p v-else>Fetched {{ devicesStore.devices.length }} devices (see console).</p>
+    <p>Connection: {{ devicesStore.connectionState }}</p>
+    <p>{{ devicesStore.devices.length }} devices (see console).</p>
   </div>
 </template>
