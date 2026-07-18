@@ -2,7 +2,10 @@ import { computed, type ComputedRef } from 'vue'
 import { useDevicesStore } from '../stores/devices'
 import { usePreferencesStore } from '../stores/preferences'
 import type { Device } from '../api/devices'
+import { sortDevices } from './sortDevices'
 
+// Feeds the map (Stage 7), not the list — the list shows all devices via
+// useSortedDevices so hidden ones stay visible (dimmed) and un-hideable.
 export function useVisibleDevices(): ComputedRef<Device[]> {
   const devicesStore = useDevicesStore()
   const preferencesStore = usePreferencesStore()
@@ -10,16 +13,7 @@ export function useVisibleDevices(): ComputedRef<Device[]> {
   return computed(() => {
     const prefs = preferencesStore.preferences
     const hiddenIds = new Set(prefs?.hidden_device_ids ?? [])
-    const sortBy = (prefs?.sort_by ?? 'display_name') as keyof Device
-    const dir = prefs?.sort_dir === 'desc' ? -1 : 1
-
-    return devicesStore.devices
-      .filter((device) => !hiddenIds.has(device.device_id))
-      .sort((a, b) => {
-        const av = a[sortBy]
-        const bv = b[sortBy]
-        if (av === bv) return 0
-        return av > bv ? dir : -dir
-      })
+    const visible = devicesStore.devices.filter((device) => !hiddenIds.has(device.device_id))
+    return sortDevices(visible, prefs?.sort_by, prefs?.sort_dir)
   })
 }

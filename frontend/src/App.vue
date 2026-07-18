@@ -2,12 +2,12 @@
 import { onMounted } from 'vue'
 import { useDevicesStore } from './stores/devices'
 import { usePreferencesStore } from './stores/preferences'
-import { useVisibleDevices } from './composables/useVisibleDevices'
+import { useSortedDevices } from './composables/useSortedDevices'
 import DeviceList from './components/DeviceList.vue'
 
 const devicesStore = useDevicesStore()
 const preferencesStore = usePreferencesStore()
-const visibleDevices = useVisibleDevices()
+const sortedDevices = useSortedDevices()
 
 onMounted(async () => {
   devicesStore.connect()
@@ -19,6 +19,6 @@ onMounted(async () => {
   <div>
     <h1>OneStepGPS Devices</h1>
     <p>Connection: {{ devicesStore.connectionState }}</p>
-    <DeviceList :devices="visibleDevices" />
+    <DeviceList :devices="sortedDevices" />
   </div>
 </template>
