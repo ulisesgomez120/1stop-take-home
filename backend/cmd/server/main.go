@@ -9,6 +9,7 @@ import (
 	"uli1step.com/internal/api"
 	"uli1step.com/internal/config"
 	"uli1step.com/internal/devices"
+	"uli1step.com/internal/icons"
 	"uli1step.com/internal/onestepgps"
 	"uli1step.com/internal/preferences"
 	"uli1step.com/internal/storage/sqlite"
@@ -30,6 +31,11 @@ func main() {
 	client := onestepgps.NewClient(cfg.OneStepGPSAPIKey, cfg.OneStepGPSBaseURL)
 	prefsStore := preferences.NewStore(db)
 
+	iconStore, err := icons.NewStore(cfg.UploadsDir)
+	if err != nil {
+		log.Fatalf("failed to init icon store: %v", err)
+	}
+
 	pollCtx, stopPolling := context.WithCancel(context.Background())
 	defer stopPolling()
 	go devices.StartPoller(pollCtx, cache, client, cfg.PollInterval)
@@ -37,6 +43,7 @@ func main() {
 	handler := api.NewRouter(api.Config{
 		Cache:            cache,
 		PreferencesStore: prefsStore,
+		IconStore:        iconStore,
 		StreamInterval:   cfg.PollInterval,
 		AllowedOrigin:    cfg.AllowedOrigin,
 	})

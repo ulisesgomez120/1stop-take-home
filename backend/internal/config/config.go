@@ -16,6 +16,7 @@ const (
 	oneStepGPSBaseURL = "https://track.onestepgps.com/v3/api/public/device"
 	port              = "8080"
 	dbPath            = "data.db"
+	uploadsDir        = "uploads"
 	pollInterval      = 10 * time.Second
 	allowedOrigin     = "http://localhost:5173"
 )
@@ -25,6 +26,7 @@ type Config struct {
 	OneStepGPSBaseURL string
 	Port              string
 	DBPath            string
+	UploadsDir        string
 	PollInterval      time.Duration
 	AllowedOrigin     string
 }
@@ -45,6 +47,7 @@ func Load() (*Config, error) {
 		OneStepGPSBaseURL: oneStepGPSBaseURL,
 		Port:              port,
 		DBPath:            dbPath,
+		UploadsDir:        uploadsDir,
 		PollInterval:      pollInterval,
 		AllowedOrigin:     allowedOrigin,
 	}, nil

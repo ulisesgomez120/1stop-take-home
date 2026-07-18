@@ -41,6 +41,7 @@ coverage.out
 cover.out
 
 data.db
+uploads/
 # Go workspace / dependencies
 go.work.sum
 

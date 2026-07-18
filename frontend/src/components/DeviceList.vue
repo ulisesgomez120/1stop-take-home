@@ -1,12 +1,16 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import type { Device } from '../api/devices'
 import { usePreferencesStore } from '../stores/preferences'
+import { apiURL } from '../api/client'
+import { uploadDeviceIcon } from '../api/icons'
 
 const props = defineProps<{
   devices: Device[]
 }>()
 
 const preferencesStore = usePreferencesStore()
+const uploadErrors = ref<Record<string, string>>({})
 
 const sortableColumns = [
   { key: 'display_name', label: 'Name' },
@@ -16,6 +20,31 @@ const sortableColumns = [
 
 function isHidden(deviceId: string): boolean {
   return preferencesStore.preferences?.hidden_device_ids.includes(deviceId) ?? false
+}
+
+function iconUrl(deviceId: string): string | null {
+  const path = preferencesStore.preferences?.device_icons[deviceId]
+  return path ? apiURL(path) : null
+}
+
+async function onIconChange(deviceId: string, event: Event) {
+  const input = event.target as HTMLInputElement
+  const file = input.files?.[0]
+  if (!file) return
+
+  uploadErrors.value = { ...uploadErrors.value, [deviceId]: '' }
+  try {
+    const url = await uploadDeviceIcon(deviceId, file)
+    const icons = { ...(preferencesStore.preferences?.device_icons ?? {}), [deviceId]: url }
+    await preferencesStore.update({ device_icons: icons })
+  } catch (err) {
+    uploadErrors.value = {
+      ...uploadErrors.value,
+      [deviceId]: err instanceof Error ? err.message : String(err),
+    }
+  } finally {
+    input.value = ''
+  }
 }
 
 function toggleHidden(deviceId: string) {
@@ -38,6 +67,7 @@ function sortBy(key: string) {
   <table class="device-list">
     <thead>
       <tr>
+        <th>Icon</th>
         <th
           v-for="col in sortableColumns"
           :key="col.key"
@@ -59,6 +89,22 @@ function sortBy(key: string) {
         :key="device.device_id"
         :class="{ 'is-hidden': isHidden(device.device_id) }"
       >
+        <td>
+          <img
+            v-if="iconUrl(device.device_id)"
+            :src="iconUrl(device.device_id)!"
+            alt=""
+            class="device-icon"
+          />
+          <input
+            type="file"
+            accept="image/png,image/jpeg,image/webp"
+            @change="onIconChange(device.device_id, $event)"
+          />
+          <div v-if="uploadErrors[device.device_id]" class="upload-error">
+            {{ uploadErrors[device.device_id] }}
+          </div>
+        </td>
         <td>{{ device.display_name }}</td>
         <td>{{ device.active_state }}</td>
         <td>{{ device.drive_status }}</td>
@@ -98,5 +144,19 @@ function sortBy(key: string) {
 
 .device-list tr.is-hidden {
   opacity: 0.5;
+}
+
+.device-icon {
+  display: block;
+  width: 32px;
+  height: 32px;
+  object-fit: cover;
+  border-radius: 4px;
+  margin-bottom: 4px;
+}
+
+.upload-error {
+  color: var(--danger, #c0392b);
+  font-size: 0.8em;
 }
 </style>

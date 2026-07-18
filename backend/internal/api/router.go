@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"uli1step.com/internal/devices"
+	"uli1step.com/internal/icons"
 	"uli1step.com/internal/preferences"
 )
 
@@ -13,6 +14,7 @@ import (
 type Config struct {
 	Cache            *devices.Cache
 	PreferencesStore *preferences.Store
+	IconStore        *icons.Store
 	StreamInterval   time.Duration
 	AllowedOrigin    string
 }
@@ -28,6 +30,8 @@ func NewRouter(cfg Config) http.Handler {
 	mux.HandleFunc("GET /api/devices/stream", handleDeviceStream(cfg.Cache, cfg.StreamInterval))
 	mux.HandleFunc("GET /api/preferences", handleGetPreferences(cfg.PreferencesStore))
 	mux.HandleFunc("PUT /api/preferences", handlePutPreferences(cfg.PreferencesStore))
+	mux.HandleFunc("POST /api/devices/{deviceID}/icon", handleUploadIcon(cfg.Cache, cfg.IconStore))
+	mux.Handle("GET /icons/", http.StripPrefix("/icons/", http.FileServer(http.Dir(cfg.IconStore.Dir()))))
 
 	return withCORS(cfg.AllowedOrigin, mux)
 }
