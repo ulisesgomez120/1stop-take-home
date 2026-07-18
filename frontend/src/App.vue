@@ -3,6 +3,7 @@ import { onMounted } from 'vue'
 import { useDevicesStore } from './stores/devices'
 import { usePreferencesStore } from './stores/preferences'
 import { useVisibleDevices } from './composables/useVisibleDevices'
+import DeviceList from './components/DeviceList.vue'
 
 const devicesStore = useDevicesStore()
 const preferencesStore = usePreferencesStore()
@@ -16,8 +17,8 @@ onMounted(async () => {
 
 <template>
   <div>
-    <h1>OneStepGPS Scaffold</h1>
+    <h1>OneStepGPS Devices</h1>
     <p>Connection: {{ devicesStore.connectionState }}</p>
-    <p>{{ devicesStore.devices.length }} total, {{ visibleDevices.length }} visible (see console).</p>
+    <DeviceList :devices="visibleDevices" />
   </div>
 </template>
