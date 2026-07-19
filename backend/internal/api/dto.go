@@ -14,6 +14,7 @@ type deviceDTO struct {
 	Online      bool      `json:"online"`
 	Lat         float64   `json:"lat"`
 	Lng         float64   `json:"lng"`
+	Heading     float64   `json:"heading"`
 	Speed       float64   `json:"speed"`
 	DtTracker   time.Time `json:"dt_tracker"`
 	DriveStatus string    `json:"drive_status"`
@@ -29,6 +30,7 @@ func toDeviceDTOs(devices []onestepgps.Device) []deviceDTO {
 			Online:      d.Online,
 			Lat:         d.Lat,
 			Lng:         d.Lng,
+			Heading:     d.Heading,
 			Speed:       d.Speed,
 			DtTracker:   d.DtTracker,
 			DriveStatus: d.DriveStatus,

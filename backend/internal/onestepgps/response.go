@@ -20,6 +20,7 @@ type rawDevice struct {
 type rawDevicePoint struct {
 	Lat         float64        `json:"lat"`
 	Lng         float64        `json:"lng"`
+	Angle       float64        `json:"angle"`
 	Speed       float64        `json:"speed"`
 	DtTracker   time.Time      `json:"dt_tracker"`
 	DeviceState rawDeviceState `json:"device_state"`
@@ -39,6 +40,7 @@ func mapDevices(raw rawResponse) []Device {
 			Online:      rd.Online,
 			Lat:         rd.LatestDevicePoint.Lat,
 			Lng:         rd.LatestDevicePoint.Lng,
+			Heading:     rd.LatestDevicePoint.Angle,
 			Speed:       rd.LatestDevicePoint.Speed,
 			DtTracker:   rd.LatestDevicePoint.DtTracker,
 			DriveStatus: rd.LatestDevicePoint.DeviceState.DriveStatus,

@@ -13,6 +13,7 @@ type Device struct {
 	Online      bool
 	Lat         float64
 	Lng         float64
+	Heading     float64
 	Speed       float64
 	DtTracker   time.Time
 	DriveStatus string

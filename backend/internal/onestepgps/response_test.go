@@ -42,6 +42,9 @@ func TestMapDevices(t *testing.T) {
 	if first.Lng != -121.8262862 {
 		t.Errorf("Lng = %v, want %v", first.Lng, -121.8262862)
 	}
+	if first.Heading != 264 {
+		t.Errorf("Heading = %v, want 264", first.Heading)
+	}
 	if first.Speed != 0 {
 		t.Errorf("Speed = %v, want 0", first.Speed)
 	}

@@ -8,6 +8,7 @@
       "latest_device_point": {
         "lat": 37.376804299999996,
         "lng": -121.8262862,
+        "angle": 264,
         "speed": 0,
         "dt_tracker": "2026-07-12T03:20:29Z",
         "device_state": {
@@ -23,6 +24,7 @@
       "latest_device_point": {
         "lat": 34.672111,
         "lng": -118.073318,
+        "angle": 213,
         "speed": 0,
         "dt_tracker": "2026-07-12T03:29:18Z",
         "device_state": {
@@ -38,6 +40,7 @@
       "latest_device_point": {
         "lat": 34.389095306396484,
         "lng": -118.45784759521484,
+        "angle": 185,
         "speed": 0,
         "dt_tracker": "2026-07-11T03:30:25Z",
         "device_state": {
@@ -53,6 +56,7 @@
       "latest_device_point": {
         "lat": 34.1094556,
         "lng": -117.79730889999999,
+        "angle": 173,
         "speed": 0,
         "dt_tracker": "2026-07-11T20:41:55Z",
         "device_state": {
@@ -68,6 +72,7 @@
       "latest_device_point": {
         "lat": 34.2886796,
         "lng": -118.4267419,
+        "angle": 158,
         "speed": 0,
         "dt_tracker": "2025-10-24T06:16:26Z",
         "device_state": {
@@ -83,6 +88,7 @@
       "latest_device_point": {
         "lat": 34.7058951,
         "lng": -118.09832569999999,
+        "angle": 94,
         "speed": 0,
         "dt_tracker": "2026-07-12T03:08:10Z",
         "device_state": {
@@ -98,6 +104,7 @@
       "latest_device_point": {
         "lat": 38.6597891,
         "lng": -121.7775147,
+        "angle": 187,
         "speed": 0,
         "dt_tracker": "2026-07-12T03:11:27Z",
         "device_state": {
