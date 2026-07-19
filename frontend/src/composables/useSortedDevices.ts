@@ -10,6 +10,7 @@ export function useSortedDevices(): ComputedRef<Device[]> {
 
   return computed(() => {
     const prefs = preferencesStore.preferences
-    return sortDevices(devicesStore.devices, prefs?.sort_by, prefs?.sort_dir)
+    const hiddenIds = new Set(prefs?.hidden_device_ids ?? [])
+    return sortDevices(devicesStore.devices, prefs?.sort_by, prefs?.sort_dir, hiddenIds)
   })
 }

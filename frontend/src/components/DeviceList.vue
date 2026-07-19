@@ -1,10 +1,8 @@
 <script setup lang="ts">
-import { ref } from 'vue'
 import type { Device } from '../api/devices'
 import { usePreferencesStore } from '../stores/preferences'
 import { useSelectionStore } from '../stores/selection'
 import { apiURL } from '../api/client'
-import { uploadDeviceIcon } from '../api/icons'
 
 const props = defineProps<{
   devices: Device[]
@@ -12,12 +10,12 @@ const props = defineProps<{
 
 const preferencesStore = usePreferencesStore()
 const selection = useSelectionStore()
-const uploadErrors = ref<Record<string, string>>({})
 
 const sortableColumns = [
   { key: 'display_name', label: 'Name' },
   { key: 'active_state', label: 'Active State' },
   { key: 'drive_status', label: 'Drive Status' },
+  { key: 'visible', label: 'Visible' },
 ] as const
 
 function isHidden(deviceId: string): boolean {
@@ -27,26 +25,6 @@ function isHidden(deviceId: string): boolean {
 function iconUrl(deviceId: string): string | null {
   const path = preferencesStore.preferences?.device_icons[deviceId]
   return path ? apiURL(path) : null
-}
-
-async function onIconChange(deviceId: string, event: Event) {
-  const input = event.target as HTMLInputElement
-  const file = input.files?.[0]
-  if (!file) return
-
-  uploadErrors.value = { ...uploadErrors.value, [deviceId]: '' }
-  try {
-    const url = await uploadDeviceIcon(deviceId, file)
-    const icons = { ...(preferencesStore.preferences?.device_icons ?? {}), [deviceId]: url }
-    await preferencesStore.update({ device_icons: icons })
-  } catch (err) {
-    uploadErrors.value = {
-      ...uploadErrors.value,
-      [deviceId]: err instanceof Error ? err.message : String(err),
-    }
-  } finally {
-    input.value = ''
-  }
 }
 
 function toggleHidden(deviceId: string) {
@@ -91,7 +69,6 @@ function sortBy(key: string) {
               {{ preferencesStore.preferences.sort_dir === 'asc' ? '▲' : '▼' }}
             </span>
           </th>
-          <th></th>
         </tr>
       </thead>
       <tbody>
@@ -109,23 +86,19 @@ function sortBy(key: string) {
               alt=""
               class="device-icon"
             />
-            <input
-              type="file"
-              accept="image/png,image/jpeg,image/webp"
-              @click.stop
-              @change="onIconChange(device.device_id, $event)"
-            />
-            <div v-if="uploadErrors[device.device_id]" class="upload-error">
-              {{ uploadErrors[device.device_id] }}
-            </div>
           </td>
           <td>{{ device.display_name }}</td>
           <td>{{ device.active_state }}</td>
           <td>{{ device.drive_status }}</td>
           <td>
-            <button type="button" @click.stop="toggleHidden(device.device_id)">
-              {{ isHidden(device.device_id) ? 'Show' : 'Hide' }}
-            </button>
+            <input
+              type="checkbox"
+              class="visible-toggle"
+              :checked="!isHidden(device.device_id)"
+              :aria-label="`Show ${device.display_name} on the map`"
+              @click.stop
+              @change="toggleHidden(device.device_id)"
+            />
           </td>
         </tr>
       </tbody>
@@ -193,16 +166,12 @@ function sortBy(key: string) {
   height: 32px;
   object-fit: cover;
   border-radius: 4px;
-  margin-bottom: 4px;
 }
 
-.device-list input[type='file'] {
-  max-width: 130px;
-  font-size: 12px;
-}
-
-.upload-error {
-  color: var(--danger, #c0392b);
-  font-size: 0.8em;
+.visible-toggle {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--accent);
+  cursor: pointer;
 }
 </style>

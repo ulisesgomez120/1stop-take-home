@@ -3,8 +3,9 @@
 A small full-stack app that shows a live map of OneStepGPS devices. A Go
 backend polls the OneStepGPS API and streams device updates to a Vue 3
 frontend over Server-Sent Events. The map is the primary view; a pullout
-panel holds the device list (hide/show, sort, custom icon upload) and a
-per-device detail view. Preferences persist server-side in SQLite.
+panel holds the device list (visibility toggles, sorting) and a per-device
+detail view (live fields, custom icon upload). Preferences persist
+server-side in SQLite.
 
 ## Stack
 

@@ -14,6 +14,6 @@ export function useVisibleDevices(): ComputedRef<Device[]> {
     const prefs = preferencesStore.preferences
     const hiddenIds = new Set(prefs?.hidden_device_ids ?? [])
     const visible = devicesStore.devices.filter((device) => !hiddenIds.has(device.device_id))
-    return sortDevices(visible, prefs?.sort_by, prefs?.sort_dir)
+    return sortDevices(visible, prefs?.sort_by, prefs?.sort_dir, hiddenIds)
   })
 }
