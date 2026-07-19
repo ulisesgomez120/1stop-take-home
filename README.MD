@@ -14,26 +14,44 @@ server-side in SQLite.
 - **Frontend**: Vue 3 + TypeScript + Pinia + Vite, `vue3-google-map` for
   Google Maps.
 
+## Requirements
+
+- **Go 1.25+** (with Go 1.21+ installed, `go run` auto-downloads the right
+  toolchain on first run — that one-time download is normal).
+- **Node 20.19+ or 22.12+** (Vite 7's requirement) and npm.
+- No C compiler needed — SQLite is the pure-Go `modernc.org/sqlite` driver.
+- Two API keys (see below).
+
 ## Setup
 
 Two API keys are required:
 
-1. **OneStepGPS API key** — from your OneStepGPS account.
-2. **Google Maps JavaScript API key** — from Google Cloud console, with the
-   Maps JavaScript API enabled.
+1. **OneStepGPS API key** — from your OneStepGPS account
+   (Account → API Access).
+2. **Google Maps JavaScript API key** — from the Google Cloud console, with
+   the **Maps JavaScript API** enabled on the project. Without it the app
+   still runs; the map pane shows a notice and the device list/detail panel
+   works normally.
 
-### Backend
+Run the backend and frontend in two terminals:
+
+### Terminal 1 — backend
 
 ```sh
 cd backend
-echo 'ONESTEPGPS_API_KEY=<your key>' > .env
+cp .env.example .env   # then fill in ONESTEPGPS_API_KEY
 go run ./cmd/server
 ```
 
-Serves on `http://localhost:8080`. Creates `data.db` (SQLite, preferences)
-and `uploads/` (device icons) in the working directory on first run.
+Serves on `http://localhost:8080`. On first run it creates `data.db`
+(SQLite, preferences) and `uploads/` (device icons) in the `backend/`
+directory — no database setup needed. Success looks like `listening on
+:8080` followed by `poll devices: refreshed cache with N devices` every
+10 seconds; if the API key is missing it exits immediately with
+`ONESTEPGPS_API_KEY is required`, and a wrong key shows as repeated
+`poll devices:` errors.
 
-### Frontend
+### Terminal 2 — frontend
 
 ```sh
 cd frontend
@@ -42,7 +60,27 @@ npm install
 npm run dev
 ```
 
-Serves on `http://localhost:5173` (the backend's allowed CORS origin).
+Open `http://localhost:5173`. The port matters: it's the backend's allowed
+CORS origin, so the dev server is pinned to 5173 (`strictPort`) and will
+fail loudly rather than drift to another port.
+
+### Quick health checks
+
+- Backend up: `curl http://localhost:8080/healthz` → 200.
+- Live data flowing: `curl http://localhost:8080/api/devices` → JSON array
+  of devices.
+- In the app: green dot in the top-right = SSE feed connected.
+
+## Troubleshooting
+
+| Symptom | Cause / fix |
+| --- | --- |
+| Backend exits with `ONESTEPGPS_API_KEY is required` | `backend/.env` missing or empty — copy `.env.example` and set the key. |
+| Backend fails with `address already in use` | Something else is on port 8080 — stop it (`lsof -i :8080`) and rerun. |
+| `npm run dev` fails with "Port 5173 is already in use" | Intentional (CORS origin is fixed) — free the port (`lsof -i :5173`) and rerun. |
+| Map area shows "Google Maps API key is missing" | `frontend/.env` missing or `VITE_GOOGLE_MAPS_API_KEY` empty — set it and restart `npm run dev` (Vite only reads `.env` at startup). |
+| Map loads but is gray / watermarked "for development purposes only" | The Maps key's Google Cloud project has no billing enabled or the Maps JavaScript API isn't enabled. |
+| Devices table is empty, red dot / "reconnecting…" top-right | Backend isn't running or the OneStepGPS key is invalid — check the backend terminal's logs. |
 
 ## Architecture notes / tradeoffs
 

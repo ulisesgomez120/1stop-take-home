@@ -1,4 +1,6 @@
-const baseURL = import.meta.env.VITE_API_BASE_URL
+// Default matches the backend's fixed port so a fresh clone works without a
+// frontend .env; the env var exists for anyone who needs to override it.
+const baseURL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8080'
 
 export function apiURL(path: string): string {
   return `${baseURL}${path}`

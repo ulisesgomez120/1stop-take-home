@@ -10,7 +10,7 @@ const props = defineProps<{
   devices: Device[]
 }>()
 
-const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY as string
+const apiKey = (import.meta.env.VITE_GOOGLE_MAPS_API_KEY ?? '') as string
 const preferencesStore = usePreferencesStore()
 const selection = useSelectionStore()
 const mapRef = ref<InstanceType<typeof GoogleMap>>()
@@ -49,7 +49,20 @@ watch(
 </script>
 
 <template>
+  <!-- A missing Maps key otherwise fails as a silent gray map with only a
+       console error — say what's wrong and how to fix it instead. -->
+  <div v-if="!apiKey" class="missing-key" :class="{ 'aside-open': selection.asideOpen }">
+    <div>
+      <h2>Google Maps API key is missing</h2>
+      <p>
+        Create <code>frontend/.env</code> (copy <code>frontend/.env.example</code>) and set
+        <code>VITE_GOOGLE_MAPS_API_KEY</code>, then restart <code>npm run dev</code>.
+      </p>
+      <p>The device list in the side panel still works without it.</p>
+    </div>
+  </div>
   <GoogleMap
+    v-else
     ref="mapRef"
     :api-key="apiKey"
     map-id="DEMO_MAP_ID"
@@ -102,6 +115,26 @@ watch(
 </template>
 
 <style scoped>
+.missing-key {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+.missing-key p {
+  margin-top: 8px;
+}
+
+/* Keep the message out from under the open aside overlay. */
+.missing-key.aside-open {
+  padding-left: calc(min(560px, 100vw) + 24px);
+}
+
 .device-map {
   display: block;
   width: 100%;
